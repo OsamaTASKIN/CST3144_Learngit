@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+    <title>After School Club</title>
+  </head>
+  <body>
+    <div id="app">
+     
+          <div class="header-container">
+            <h1 v-text="sitename"></h1>
+            <button class="checkout-button" v-on:click="showCheckout">
+              <i class="fa-solid fa-cart-shopping"></i> Checkout ({{
+              cartitemcount }})
+            </button>
+          </div>
+        </header>
+      </header>
+
+      <main v-if="product.showProduct">
+        <figure>
+          <img class="image-1" v-bind:src="product.image" />
+        </figure>
+
+        <h2 v-text="product.subject"></h2>
+        <p v-text="'Location: ' + product.location"></p>
+        <p>Price: {{ product.price }}</p>
+        <p>Available Items: {{ product.AvailableInventory }}</p>
+        <button v-on:click="addToCart" v-if="canAddToCart">Add to cart</button>
+        <button disabled v-else>Add to cart</button>
+      </main>
+
+      <!-- Popup for cart update -->
+      <div v-if="showPopup" class="popup">{{ popupMessage }}</div>
+    </div>
+
+    <script type="text/javascript">
+      var AfterSchoolClub = new Vue({
+        el: "#app",
+        data: {
+          sitename: "After School Club",
+          product: {
+            showProduct: true,
+            id: 101,
+            subject: "Math",
+            location: "London",
+            price: 100,
+            image: "images/math.png",
+            AvailableInventory: 5,
+          },
+          cart: [],
+          showPopup: false,
+          popupMessage: "",
+        },
+        computed: {
+          cartitemcount: function () {
+            return this.cart.length;
+          },
+          canAddToCart: function () {
+            return this.product.AvailableInventory > 0;
+          },
+        },
+        methods: {
+          addToCart: function () {
+            if (this.product.AvailableInventory > 0) {
+              this.cart.push(this.product.id);
+              this.product.AvailableInventory -= 1;
+              this.showPopupMessage(
+                `Added ${this.product.subject} to the cart.`
+              );
+            }
+          },
+          showCheckout: function () {
+            this.product.showProduct = !this.product.showProduct;
+          },
+          showPopupMessage: function (message) {
+            this.popupMessage = message;
+            this.showPopup = true;
+            setTimeout(() => {
+              this.showPopup = false;
+            }, 2000);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
